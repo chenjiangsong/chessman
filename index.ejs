@@ -4,11 +4,50 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link rel="stylesheet" href="//at.alicdn.com/t/font_q6rrgnxyjy8pvi.css">
   <title>五子棋 typescript</title>
 </head>
 <body>
-  <div id="app" class="chess-wrap">
-    <div class="chessboard" id="chessboard">
+  <div id="app" class="app">
+    <!-- 棋盘部分 -->
+    <div class="chess-wrap">
+      <div class="chessboard" id="chessboard"></div>
+    </div>
+    
+    <!-- 按钮部分 -->
+    <div class="options-wrap">
+      <div class="msg msg-info">
+        <span class="icon">
+          <i class="iconfont icon-info1"></i>
+        </span>
+        <span class="message">
+          黑方执棋
+        </span>
+      </div>
+
+      <div class="msg msg-success">
+        <span class="icon">
+          <i class="iconfont icon-success"></i>
+        </span>
+        <span class="message">
+          黑方获胜
+        </span>
+      </div>
+
+      <button class="btn btn-regret">
+        <i class="iconfont"></i>
+        我要悔棋
+      </button> 
+      
+      <button class="btn btn-revoke">
+        <i class="iconfont"></i>
+        撤销悔棋
+      </button> 
+      
+      <button class="btn btn-restart">
+        <i class="iconfont"></i>
+        重开一局
+      </button>
     </div>
   </div>
 </body>

@@ -1,2 +1,2 @@
-console.log('五子棋')
+import './style.less'
 
