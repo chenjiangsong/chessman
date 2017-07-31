@@ -53,18 +53,53 @@ export default class Chesscanvas {
 
   renderCanvasChessman (stepInfo, resolve) {
     const { x, y, player, index} = stepInfo
-    this.drawCircle(x, y, player)
+    this._drawCircle(x, y, player)
+    resolve()
   }
 
-  drawCircle (x, y, player) {
+  removeCanvasChessman (stepInfo, resolve) {
+    const { x, y, player, index} = stepInfo
+    console.log(12121)
+    this._clearCircle(x, y, player)
+  }
+
+  // 清除圆
+  _clearCircle (x, y, player) {
+    const ctx = this.ctx
+    const radius = 16
+    console.log(x, y)
+    // 圆心坐标
+    x = x * 36 + 18
+    y = y * 36 + 18
+
+    // 清除包含棋子的矩形区域
+    const data = [(x - radius) * DPR , (y - radius) * DPR, 2 * radius * DPR , 2 * radius * DPR]
+    ctx.clearRect.apply(ctx, data)
+
+    // 背景还原
+    ctx.fillStyle = this.options.backgroundColor
+    ctx.fillRect.apply(ctx, data)
+
+    // 格线还原
+    ctx.beginPath()
+    this.drawLine(x - radius, y, x + radius, y)
+    this.drawLine(x, y - radius, x , y + radius)
+    ctx.stroke()
+    
+  }
+
+  // 画圆
+  _drawCircle (x, y, player) {
     const ctx = this.ctx
     const radius = 16
     const startAngle = 0
     const endAngle = 2 * Math.PI
     const anticlockwise = true
 
+    // 圆心坐标
     x = x * 36 + 18
     y = y * 36 + 18
+    console.log(x, y)
     ctx.beginPath()
     ctx.fillStyle = player === BLACK ? '#000' : '#fff'
     ctx.arc(x * DPR, y * DPR, radius * DPR, startAngle, endAngle, anticlockwise);

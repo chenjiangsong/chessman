@@ -72,7 +72,7 @@ export default class Chessboard extends EventEmitter {
     const self = this
     return new Promise((resolve, reject) => {
       if (self.chessboardType === 'dom') {
-        self.renderDomChessman(stepInfo)
+        self._renderDomChessman(stepInfo)
         resolve()
       } else {
         self.painter.renderCanvasChessman(stepInfo, resolve)
@@ -80,17 +80,36 @@ export default class Chessboard extends EventEmitter {
     })
   }
 
-  renderDomChessman (stepInfo) {
+  _renderDomChessman (stepInfo) {
     const {x, y, player, index} = stepInfo
     const grid = document.getElementById(`grid-${x}-${y}`)
     const chessman = document.createElement('div')
+    // chessman.id = `chessman-${x}-${y}`
     chessman.className = 'chessman'
     chessman.style.backgroundColor = player === BLACK ? 'black' : 'white'
     grid.appendChild(chessman)
   }
+  /**
+   * 悔棋 移除棋子
+   */
+  removeChessman (stepInfo) {
+    const self = this
+    return new Promise((resolve, reject) => {
+      if (self.chessboardType === 'dom') {
+        console.log(12)
+        self._removeDomChessman(stepInfo)
+        resolve()
+      } else {
+        console.log(11)
+        self.painter.removeCanvasChessman(stepInfo, resolve)
+      }
+    })
+  }
 
-  removeDomChessman () {
-    
+  _removeDomChessman(stepInfo) {
+    const {x, y, player, index} = stepInfo
+    const grid = document.getElementById(`grid-${x}-${y}`)
+    grid.removeChild(grid.childNodes[0])
   }
 
   bind (event, fn) {
