@@ -1,9 +1,13 @@
 import Chesscanvas from './chesscanvas'
+import EventEmitter from './events'
 
 const DPR = window.devicePixelRatio
+const BLACK = 1
+const WHITE = -1
 
-export default class Chessboard {
+export default class Chessboard extends EventEmitter {
   constructor (options) {
+    super()
     this.options = Object.assign({
       wrapId: 'chess-wrap',
       id: 'chessboard',
@@ -13,6 +17,7 @@ export default class Chessboard {
       height: 540
     }, options)
     this.chessWrap = document.getElementById('chess-wrap')
+    this.chessboardType = ''
     // this.chessboard = document.getElementById(this.options.id)
   }
 
@@ -20,6 +25,7 @@ export default class Chessboard {
   renderDom () {
     if (this.chessboard) return 
     
+    this.chessboardType = 'dom'
     const chessboard = this.chessboard = document.createElement('div')
     chessboard.id = this.options.id
     chessboard.className = 'chessboard'
@@ -36,8 +42,10 @@ export default class Chessboard {
   // canvas 形式渲染
   renderCanvas () {
     if (this.chessboard) return 
+
+    this.chessboardType = 'canvas'
     const { width, height } = this.options
-    
+
     const chessboard = this.chessboard = document.createElement('canvas')
     chessboard.id = this.options.id
     chessboard.className = 'chessboard'
@@ -47,10 +55,50 @@ export default class Chessboard {
 
     const ctx = this.ctx = chessboard.getContext('2d')
 
-    const painter = new Chesscanvas({ctx})
+    const painter = this.painter =  new Chesscanvas({ctx})
 
     painter.renderChessboard()
+  }
 
+  /**
+   * 棋盘落子效果
+   * @param {*} stepInfo 
+   *  steps 当前步数
+   *  x
+   *  y
+   *  player
+   */
+  addChessman (stepInfo) {
+    const self = this
+    return new Promise((resolve, reject) => {
+      if (self.chessboardType === 'dom') {
+        self.renderDomChessman(stepInfo)
+        resolve()
+      } else {
+        self.painter.renderCanvasChessman(stepInfo, resolve)
+      }
+    })
+  }
+
+  renderDomChessman (stepInfo) {
+    const {x, y, player, index} = stepInfo
+    const grid = document.getElementById(`grid-${x}-${y}`)
+    const chessman = document.createElement('div')
+    chessman.className = 'chessman'
+    chessman.style.backgroundColor = player === BLACK ? 'black' : 'white'
+    grid.appendChild(chessman)
+  }
+
+  removeDomChessman () {
+    
+  }
+
+  bind (event, fn) {
+    this.chessboard.addEventListener(event, fn)
+  }
+
+  unbind(event, fn) {
+    this.chessboard.removeEventListener(event, fn)
   }
 }
 

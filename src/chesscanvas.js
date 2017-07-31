@@ -1,4 +1,6 @@
 const DPR = window.devicePixelRatio
+const BLACK = 1
+const WHITE = -1
 
 export default class Chesscanvas {
   constructor (options) {
@@ -47,6 +49,26 @@ export default class Chesscanvas {
     }
 
     ctx.stroke()
+  }
+
+  renderCanvasChessman (stepInfo, resolve) {
+    const { x, y, player, index} = stepInfo
+    this.drawCircle(x, y, player)
+  }
+
+  drawCircle (x, y, player) {
+    const ctx = this.ctx
+    const radius = 16
+    const startAngle = 0
+    const endAngle = 2 * Math.PI
+    const anticlockwise = true
+
+    x = x * 36 + 18
+    y = y * 36 + 18
+    ctx.beginPath()
+    ctx.fillStyle = player === BLACK ? '#000' : '#fff'
+    ctx.arc(x * DPR, y * DPR, radius * DPR, startAngle, endAngle, anticlockwise);
+    ctx.fill()
   }
 
   drawLine (fromX, fromY, toX, toY) {
