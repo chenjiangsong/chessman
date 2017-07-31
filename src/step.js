@@ -32,8 +32,10 @@ export default class Step extends EventEmitter {
     y = parseInt(y)
     return new Promise((resolve, reject) => {
       if (self.checkCurrentStep(x, y)) {
+        console.log('??')
         reject()
       } else {
+        console.log('11')
         const player = self.getNextPlayer()
 
         self.chess[x][y] = player
@@ -57,7 +59,43 @@ export default class Step extends EventEmitter {
   
   // 检查胜利条件
   checkWin (x, y) {
-    return true
+    console.log(x, y)
+    const self = this
+    
+    // 判断上下限
+    let left = x - 4 > 0 ? x - 4 : 0
+    let right = x + 4 < 14 ? x + 4 : 14
+    let top = y - 4 > 0 ? y - 4 : 0
+    let bottom = y + 4 < 14 ? y + 4 : 14
+
+    // if (isRow()) return true
+    if (isColumn()) return true
+    
+    // 横向判断
+    function isRow () {
+      let sum = 0
+      for (let i = left; i < right; i++) {
+        sum += self.chess[i][y]
+        if (Math.abs(sum) === 5) {
+          return true
+          break
+        }
+      }
+      return false
+    }
+
+    // 纵向判断
+    function isColumn () {
+      let sum = 0
+      for (let i = top; i < bottom; i++) {
+        sum += self.chess[x][i]
+        if (Math.abs(sum) === 5) {
+          return true
+          break
+        }
+      }
+      return false
+    }
   }
 
   // 信息板展示
@@ -89,14 +127,14 @@ export default class Step extends EventEmitter {
   revoke () {
     const self = this
     return new Promise((resolve, reject) => {
-      const regretStep = self.regretList.pop()
-      if (regretStep) {
-        const { x, y, player } = regretStep
+      const revokeStep = self.regretList.pop()
+      if (revokeStep) {
+        const { x, y, player } = revokeStep
 
         self.chess[x][y] = player
         self.currentStep++
-        self.steps.push(regretStep)
-        resolve(regretStep)
+        self.steps.push(revokeStep)
+        resolve(revokeStep)
       } else {
         reject()
       }
@@ -114,6 +152,7 @@ export default class Step extends EventEmitter {
     return this.chess[x][y] === 0 ? false : true
   }
 
+  // 获取当前执棋方
   getNextPlayer () {
     return this.currentStep % 2 === 0 ? BLACK : WHITE
   }

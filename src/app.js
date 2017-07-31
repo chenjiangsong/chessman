@@ -41,8 +41,8 @@ step.on('displayWin', function (player) {
 
 
 // 切换dom渲染或canvas渲染
-// chessboard.renderDom()
-chessboard.renderCanvas()
+chessboard.renderDom()
+// chessboard.renderCanvas()
 
 // 绑定下棋事件
 chessboard.bind('click', play)
@@ -71,8 +71,10 @@ function play (e) {
   }, () => {
     console.log('点到怪地方去了')
   }).then(() => {
+    // 检查胜利条件
     if (step.checkWin(x, y)) {
-      step.emit('displayWin', 1)
+      const player = - step.getNextPlayer()
+      step.emit('displayWin', player)
     }
   })
   
@@ -91,8 +93,8 @@ function regret () {
 // 撤销悔棋 点击事件
 function revoke () {
   // 执行 step revoke 方法后，在棋盘上添加棋子
-  step.revoke().then((regretStep) => {
-    chessboard.addChessman(regretStep)
+  step.revoke().then((revokeStep) => {
+    chessboard.addChessman(revokeStep)
   }, () => {
     console.log('无悔可撤')
   })

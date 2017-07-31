@@ -89,6 +89,7 @@ export default class Chessboard extends EventEmitter {
    */
   addChessman (stepInfo) {
     const self = this
+    console.log(stepInfo)
     return new Promise((resolve, reject) => {
       if (self.chessboardType === 'dom') {
         self._renderDomChessman(stepInfo)
