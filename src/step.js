@@ -32,10 +32,8 @@ export default class Step extends EventEmitter {
     y = parseInt(y)
     return new Promise((resolve, reject) => {
       if (self.checkCurrentStep(x, y)) {
-        console.log('??')
         reject()
       } else {
-        console.log('11')
         const player = self.getNextPlayer()
 
         self.chess[x][y] = player
@@ -59,7 +57,6 @@ export default class Step extends EventEmitter {
   
   // 检查胜利条件
   checkWin (x, y) {
-    console.log(x, y)
     const self = this
     
     // 判断上下限
@@ -68,8 +65,12 @@ export default class Step extends EventEmitter {
     let top = y - 4 > 0 ? y - 4 : 0
     let bottom = y + 4 < 14 ? y + 4 : 14
 
-    // if (isRow()) return true
+    if (isRow()) return true
     if (isColumn()) return true
+    if (is45deg()) return true
+    if (is135deg()) return true
+    
+    return false 
     
     // 横向判断
     function isRow () {
@@ -89,6 +90,45 @@ export default class Step extends EventEmitter {
       let sum = 0
       for (let i = top; i < bottom; i++) {
         sum += self.chess[x][i]
+        if (Math.abs(sum) === 5) {
+          return true
+          break
+        }
+      }
+      return false
+    }
+
+    // 45deg 
+    function is45deg () {
+      const leftPadding = (x - left) > (bottom - y) ? (bottom - y) : (x - left)
+      const rightPadding = (right - x) > (y - top) ? (y - top) : (right - x)
+
+      const _left = x - leftPadding
+      const _bottom = y + leftPadding
+      
+      const len = leftPadding + rightPadding
+      let sum = 0
+      for (let i = 0; i < len; i++) {
+        sum += self.chess[_left+i][_bottom-i]
+        if (Math.abs(sum) === 5) {
+          return true
+          break
+        }
+      }
+      return false
+    }
+
+    // 135deg
+    function is135deg () {
+      const leftPadding = (x - left) > (y - top) ? (y - top) : (x - left)
+      const rightPadding = (right - x) > (bottom - y) ? (bottom - y) : (right - x)
+
+      const _left = x - leftPadding
+      const _top = y - leftPadding
+      const len = leftPadding + rightPadding
+      let sum = 0
+      for (let i = 0; i < len; i++) {
+        sum += self.chess[_left+i][_top+i]
         if (Math.abs(sum) === 5) {
           return true
           break

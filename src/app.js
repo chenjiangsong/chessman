@@ -41,8 +41,8 @@ step.on('displayWin', function (player) {
 
 
 // 切换dom渲染或canvas渲染
-chessboard.renderDom()
-// chessboard.renderCanvas()
+// chessboard.renderDom()
+chessboard.renderCanvas()
 
 // 绑定下棋事件
 chessboard.bind('click', play)
@@ -84,6 +84,7 @@ function play (e) {
 function regret () {
   // 执行 step regret 方法后，在棋盘上移除棋子
   step.regret().then((regretStep) => {
+    step.emit('displayInfo', -regretStep.player)
     chessboard.removeChessman(regretStep)
   }, () => {
     console.log('无棋可悔')
@@ -94,6 +95,7 @@ function regret () {
 function revoke () {
   // 执行 step revoke 方法后，在棋盘上添加棋子
   step.revoke().then((revokeStep) => {
+    step.emit('displayInfo', revokeStep.player)
     chessboard.addChessman(revokeStep)
   }, () => {
     console.log('无悔可撤')
