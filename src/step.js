@@ -3,8 +3,16 @@ import EventEmitter from './events'
 const BLACK = 1
 const WHITE = -1
 
-export default class Step {
+/**
+ * 专注处理下棋逻辑 无dom操作 
+ */
+export default class Step extends EventEmitter {
   constructor () {
+    super()
+    this.init()
+  }
+  
+  init () {
     this.player = BLACK
     this.currentStep = 0
     this.steps = []
@@ -16,16 +24,6 @@ export default class Step {
         return 0
       })
     })
-
-    this.infoBoard = document.querySelector('.play-info')
-    this.successBoard = document.querySelector('.success-info')
-
-    this.info = new EventEmitter()
-    this.info.on('win', function (player) {
-      this.successBoard.style.display = 'block'
-      this.successBoard.innerHTML = player === BLACK ? '黑房获胜' : '白方获胜'
-    })
-
   }
 
   nextStep (x, y) {
@@ -59,7 +57,7 @@ export default class Step {
   
   // 检查胜利条件
   checkWin (x, y) {
-    
+    return true
   }
 
   // 信息板展示

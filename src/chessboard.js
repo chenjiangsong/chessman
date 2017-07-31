@@ -8,6 +8,7 @@ const WHITE = -1
 export default class Chessboard extends EventEmitter {
   constructor (options) {
     super()
+
     this.options = Object.assign({
       wrapId: 'chess-wrap',
       id: 'chessboard',
@@ -16,12 +17,18 @@ export default class Chessboard extends EventEmitter {
       width: 540,
       height: 540
     }, options)
+
     this.chessWrap = document.getElementById('chess-wrap')
+    
+    // 棋盘样式对象
+    this.chessboard = null
+    // 棋盘渲染类型 dom or canvas
     this.chessboardType = ''
-    // this.chessboard = document.getElementById(this.options.id)
+    // 是否已绑定事件
+    this.hasClickHandle = false
   }
 
-  // dom 形式渲染
+  // dom 渲染
   renderDom () {
     if (this.chessboard) return 
     
@@ -39,7 +46,7 @@ export default class Chessboard extends EventEmitter {
     }
   }
 
-  // canvas 形式渲染
+  // canvas 渲染
   renderCanvas () {
     if (this.chessboard) return 
 
@@ -58,6 +65,18 @@ export default class Chessboard extends EventEmitter {
     const painter = this.painter =  new Chesscanvas({ctx})
 
     painter.renderChessboard()
+  }
+
+  reRender () {
+    // 父容器中移除 this.chessboard
+    this.chessWrap.removeChild(this.chessboard)
+    this.chessboard = null
+    // 根据之前的渲染方式重新渲染
+    if (this.chessboardType === 'dom') {
+      this.renderDom()
+    } else {
+      this.renderCanvas()
+    }
   }
 
   /**
@@ -113,10 +132,14 @@ export default class Chessboard extends EventEmitter {
   }
 
   bind (event, fn) {
+    // 防止重复绑定事件
+    // if (this.hasClickHandle) return
+    // this.hasClickHandle = true
     this.chessboard.addEventListener(event, fn)
   }
 
   unbind(event, fn) {
+    // this.hasClickHandle = false
     this.chessboard.removeEventListener(event, fn)
   }
 }
