@@ -23,7 +23,7 @@ export default class Chessboard extends EventEmitter {
     // 棋盘样式对象
     this.chessboard = null
     // 棋盘渲染类型 dom or canvas
-    this.chessboardType = ''
+    this.renderType = ''
     // 是否已绑定事件
     this.hasClickHandle = false
   }
@@ -32,7 +32,7 @@ export default class Chessboard extends EventEmitter {
   renderDom () {
     if (this.chessboard) return 
     
-    this.chessboardType = 'dom'
+    this.renderType = 'dom'
     const chessboard = this.chessboard = document.createElement('div')
     chessboard.id = this.options.id
     chessboard.className = 'chessboard'
@@ -50,7 +50,7 @@ export default class Chessboard extends EventEmitter {
   renderCanvas () {
     if (this.chessboard) return 
 
-    this.chessboardType = 'canvas'
+    this.renderType = 'canvas'
     const { width, height } = this.options
 
     const chessboard = this.chessboard = document.createElement('canvas')
@@ -67,16 +67,24 @@ export default class Chessboard extends EventEmitter {
     painter.renderChessboard()
   }
 
+  // 棋盘重新渲染
   reRender () {
     // 父容器中移除 this.chessboard
     this.chessWrap.removeChild(this.chessboard)
     this.chessboard = null
     // 根据之前的渲染方式重新渲染
-    if (this.chessboardType === 'dom') {
+    if (this.renderType === 'dom') {
       this.renderDom()
     } else {
       this.renderCanvas()
     }
+  }
+
+  // 切换棋盘渲染方式
+  switchRender () {
+    const currentType = this.renderType
+    this.renderType = currentType === 'dom' ? 'canvas' : 'dom'
+    this.reRender()
   }
 
   /**
@@ -91,7 +99,7 @@ export default class Chessboard extends EventEmitter {
     const self = this
     console.log(stepInfo)
     return new Promise((resolve, reject) => {
-      if (self.chessboardType === 'dom') {
+      if (self.renderType === 'dom') {
         self._renderDomChessman(stepInfo)
         resolve()
       } else {
@@ -115,7 +123,7 @@ export default class Chessboard extends EventEmitter {
   removeChessman (stepInfo) {
     const self = this
     return new Promise((resolve, reject) => {
-      if (self.chessboardType === 'dom') {
+      if (self.renderType === 'dom') {
         console.log(12)
         self._removeDomChessman(stepInfo)
         resolve()
@@ -132,6 +140,10 @@ export default class Chessboard extends EventEmitter {
     grid.removeChild(grid.childNodes[0])
   }
 
+  getRenderType () {
+    return this.renderType
+  }
+  
   bind (event, fn) {
     // 防止重复绑定事件
     // if (this.hasClickHandle) return
@@ -143,6 +155,8 @@ export default class Chessboard extends EventEmitter {
     // this.hasClickHandle = false
     this.chessboard.removeEventListener(event, fn)
   }
+
+  
 }
 
 

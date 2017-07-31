@@ -58,7 +58,8 @@ export default class Step extends EventEmitter {
   // 检查胜利条件
   checkWin (x, y) {
     const self = this
-    
+    x = parseInt(x)
+    y = parseInt(y)
     // 判断上下限
     let left = x - 4 > 0 ? x - 4 : 0
     let right = x + 4 < 14 ? x + 4 : 14
@@ -75,7 +76,7 @@ export default class Step extends EventEmitter {
     // 横向判断
     function isRow () {
       let sum = 0
-      for (let i = left; i < right; i++) {
+      for (let i = left; i < right + 1; i++) {
         sum += self.chess[i][y]
         if (Math.abs(sum) === 5) {
           return true
@@ -88,7 +89,7 @@ export default class Step extends EventEmitter {
     // 纵向判断
     function isColumn () {
       let sum = 0
-      for (let i = top; i < bottom; i++) {
+      for (let i = top; i < bottom + 1; i++) {
         sum += self.chess[x][i]
         if (Math.abs(sum) === 5) {
           return true
@@ -105,10 +106,14 @@ export default class Step extends EventEmitter {
 
       const _left = x - leftPadding
       const _bottom = y + leftPadding
-      
-      const len = leftPadding + rightPadding
+      console.log('x, y, ', x, y)
+      console.log('leftPadding, rightPadding', leftPadding, rightPadding)
+      console.log('_left, _bottom', _left, _bottom)
+
+      const len = leftPadding + rightPadding + 1
       let sum = 0
       for (let i = 0; i < len; i++) {
+        console.log(_left+i, _bottom-i)
         sum += self.chess[_left+i][_bottom-i]
         if (Math.abs(sum) === 5) {
           return true
@@ -125,7 +130,7 @@ export default class Step extends EventEmitter {
 
       const _left = x - leftPadding
       const _top = y - leftPadding
-      const len = leftPadding + rightPadding
+      const len = leftPadding + rightPadding + 1
       let sum = 0
       for (let i = 0; i < len; i++) {
         sum += self.chess[_left+i][_top+i]

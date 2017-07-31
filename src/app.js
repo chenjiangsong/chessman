@@ -1,6 +1,7 @@
 import './style.less'
 import Chessboard from './chessboard'
 import Step from './step'
+import ObserveDisplay from './display'
 
 // 实例化棋盘对象，用来绘制棋盘，绘制落子 悔棋等样式
 const chessboard = new Chessboard()
@@ -8,41 +9,16 @@ const chessboard = new Chessboard()
 // 实例化步数对象，处理下棋悔棋撤销等逻辑
 const step = new Step()
 
-// 跟步数相关的信息展示（dom操作）  通过继承 EventEmitter 绑定在实例上
-const infoBoard = document.querySelector('.msg-info')
-const infoText = document.querySelector('.play-info')
-const successBoard = document.querySelector('.msg-success')
-const successText = document.querySelector('.success-info')
-
-// 初始化
-step.on('initInfo', function () {
-  infoText.innerHTML = '黑方执棋'
-  infoBoard.style.display = 'block'
-  successBoard.style.display = 'none'
-})
-
-// 下一步展示
-step.on('displayInfo', function (player) {
-  infoText.innerHTML = player === -1 ? '黑方执棋' : '白方执棋'
-  infoBoard.style.display = 'block'
-  successBoard.style.display = 'none'
-})
-
-// 胜利展示
-step.on('displayWin', function (player) {
-  successText.innerHTML = player === 1 ? '黑方获胜' : '白方获胜'
-  successBoard.style.display = 'block'
-  infoBoard.style.display = 'none'
-
+ObserveDisplay(step)
+step.on('displayWin', function () {
   chessboard.unbind('click', play)
 })
 
 
 
-
-// 切换dom渲染或canvas渲染
-// chessboard.renderDom()
-chessboard.renderCanvas()
+// 选择dom渲染或canvas渲染
+chessboard.renderDom()
+// chessboard.renderCanvas()
 
 // 绑定下棋事件
 chessboard.bind('click', play)
@@ -56,21 +32,24 @@ document.getElementById('revoke').addEventListener('click', revoke)
 // 绑定重开一局事件
 document.getElementById('restart').addEventListener('click', restart)
 
+// 切换渲染方式
+document.getElementById('switch').addEventListener('click', switchRender)
 
 
 // 下棋落子 点击事件
 function play (e) {
   const [x, y] = getGridXY(e)
   // 使用dom渲染时 有可能点到背景上去
-  if (!x || !y) return 
-  
-  
+  if (typeof x === 'undefined' || typeof y === 'undefined') return 
+
+  console.log(x)
   step.nextStep(x, y).then((stepInfo) => {
     step.emit('displayInfo', stepInfo.player)
     return chessboard.addChessman(stepInfo)
   }, () => {
     console.log('点到怪地方去了')
   }).then(() => {
+    step.emit('activateRegret')
     // 检查胜利条件
     if (step.checkWin(x, y)) {
       const player = - step.getNextPlayer()
@@ -87,6 +66,7 @@ function regret () {
     step.emit('displayInfo', -regretStep.player)
     chessboard.removeChessman(regretStep)
   }, () => {
+    step.emit('disableRegret')
     console.log('无棋可悔')
   })
 }
@@ -115,9 +95,23 @@ function restart () {
   step.init()
 }
 
+
+function switchRender () {
+  chessboard.switchRender()
+  // 重新绑定事件
+  chessboard.bind('click', play)
+
+  step.emit('displaySwitch', chessboard.getRenderType())
+
+  step.emit('initInfo')
+
+  step.init()
+}
+
 // 获取落子点的坐标
 function getGridXY (e) {
   let x, y
+  console.log(e)
   if (e.target.nodeName.toLowerCase() === 'canvas') {
     x = Math.floor(e.offsetX / 36)
     y = Math.floor(e.offsetY / 36)
@@ -126,6 +120,6 @@ function getGridXY (e) {
     x = idGroup[1]
     y = idGroup[2]
   }
-  
+  console.log(x, y)
   return [x, y]
 }

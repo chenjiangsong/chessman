@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <link rel="stylesheet" href="//at.alicdn.com/t/font_q6rrgnxyjy8pvi.css">
+  <link rel="stylesheet" href="//at.alicdn.com/t/font_pfc4vq4426totj4i.css">
   <title>五子棋 typescript</title>
 </head>
 <body>
@@ -17,6 +17,16 @@
     
     <!-- 按钮部分 -->
     <div class="options-wrap">
+
+      <div class="msg msg-title">
+        <span class="icon">
+          <i class="iconfont icon-chess1218"></i>
+        </span>
+        <span class="message">
+          五子棋
+        </span>
+      </div>
+
       <div class="msg msg-info">
         <span class="icon">
           <i class="iconfont icon-info1"></i>
@@ -35,19 +45,24 @@
         </span>
       </div>
 
-      <div class="btn btn-regret" id="regret">
-        <i class="iconfont"></i>
+      <div class="btn btn-regret" id="regret" disabled>
+        <i class="iconfont icon-chehui"></i>
         我要悔棋
       </div> 
       
-      <div class="btn btn-revoke" id="revoke">
-        <i class="iconfont"></i>
+      <div class="btn btn-revoke disable" id="revoke" disabled>
+        <i class="iconfont icon-huanyipi-copy"></i>
         撤销悔棋
       </div> 
       
       <div class="btn btn-restart" id="restart">
-        <i class="iconfont"></i>
+        <i class="iconfont icon-Restart"></i>
         重开一局
+      </div>
+
+      <div class="btn btn-switch" id="switch">
+        <i class="iconfont icon-qiehuan"></i>
+        <span class="msg-switch">点击切换成CANVAS渲染</span>
       </div>
     </div>
   </div>
