@@ -2,6 +2,10 @@ var express = require('express')
 var webpack = require('webpack')
 var webpackConf = require('./webpack.config')
 
+Object.keys(webpackConf.entry).forEach(function (name) {
+  webpackConf.entry[name] = ['./build/dev-client'].concat(webpackConf.entry[name])
+})
+
 var app = express()
 var compiler = webpack(webpackConf)
 
