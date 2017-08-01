@@ -1,7 +1,7 @@
 import './style.less'
 import Chessboard from './chessboard'
 import Step from './step'
-import ObserveDisplay from './display'
+import info from './info'
 
 // 实例化棋盘对象，用来绘制棋盘，绘制落子 悔棋等样式
 const chessboard = new Chessboard()
@@ -9,8 +9,8 @@ const chessboard = new Chessboard()
 // 实例化步数对象，处理下棋悔棋撤销等逻辑
 const step = new Step()
 
-ObserveDisplay(step)
-step.on('displayWin', function () {
+// ObserveDisplay(step)
+info.on('displayWin', function () {
   chessboard.unbind('click', play)
 })
 
@@ -42,18 +42,21 @@ function play (e) {
   // 使用dom渲染时 有可能点到背景上去
   if (typeof x === 'undefined' || typeof y === 'undefined') return 
 
-  console.log(x)
   step.nextStep(x, y).then((stepInfo) => {
-    step.emit('displayInfo', stepInfo.player)
+    info.emit('displayInfo', stepInfo.player)
     return chessboard.addChessman(stepInfo)
   }, () => {
     console.log('点到怪地方去了')
   }).then(() => {
-    step.emit('activateRegret')
+
+    // 落子后 激活悔棋按钮 禁用撤销悔棋
+    info.emit('disableRevoke')
+    info.emit('activateRegret')
+
     // 检查胜利条件
     if (step.checkWin(x, y)) {
       const player = - step.getNextPlayer()
-      step.emit('displayWin', player)
+      info.emit('displayWin', player)
     }
   })
   
@@ -61,12 +64,17 @@ function play (e) {
 
 // 悔棋 点击事件
 function regret () {
-  // 执行 step regret 方法后，在棋盘上移除棋子
-  step.regret().then((regretStep) => {
-    step.emit('displayInfo', -regretStep.player)
+  // 执行 step regret 方法后，在棋盘上移除棋子 并激活 撤销悔棋
+  step.regret().then(({regretStep, noRegret}) => {
     chessboard.removeChessman(regretStep)
+    
+    info.emit('displayInfo', -regretStep.player)
+    info.emit('activateRevoke')
+    // 禁用悔棋
+    if (noRegret) {
+      info.emit('disableRegret')
+    }
   }, () => {
-    step.emit('disableRegret')
     console.log('无棋可悔')
   })
 }
@@ -74,9 +82,14 @@ function regret () {
 // 撤销悔棋 点击事件
 function revoke () {
   // 执行 step revoke 方法后，在棋盘上添加棋子
-  step.revoke().then((revokeStep) => {
-    step.emit('displayInfo', revokeStep.player)
+  step.revoke().then(({revokeStep, noRevoke}) => {
+    info.emit('displayInfo', revokeStep.player)
     chessboard.addChessman(revokeStep)
+
+    // 禁用撤销悔棋
+    if (noRevoke) {
+      info.emit('disableRevoke')
+    }
   }, () => {
     console.log('无悔可撤')
   })
@@ -90,7 +103,7 @@ function restart () {
   // 重新绑定事件
   chessboard.bind('click', play)
 
-  step.emit('initInfo')
+  info.emit('initInfo')
 
   step.init()
 }
@@ -101,9 +114,9 @@ function switchRender () {
   // 重新绑定事件
   chessboard.bind('click', play)
 
-  step.emit('displaySwitch', chessboard.getRenderType())
+  info.emit('displaySwitch', chessboard.getRenderType())
 
-  step.emit('initInfo')
+  info.emit('initInfo')
 
   step.init()
 }

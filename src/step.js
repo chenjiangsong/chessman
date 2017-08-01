@@ -106,14 +106,10 @@ export default class Step extends EventEmitter {
 
       const _left = x - leftPadding
       const _bottom = y + leftPadding
-      console.log('x, y, ', x, y)
-      console.log('leftPadding, rightPadding', leftPadding, rightPadding)
-      console.log('_left, _bottom', _left, _bottom)
 
       const len = leftPadding + rightPadding + 1
       let sum = 0
       for (let i = 0; i < len; i++) {
-        console.log(_left+i, _bottom-i)
         sum += self.chess[_left+i][_bottom-i]
         if (Math.abs(sum) === 5) {
           return true
@@ -160,13 +156,18 @@ export default class Step extends EventEmitter {
         self.chess[x][y] = 0
         self.currentStep--
         self.regretList.push(regretStep)
-        resolve(regretStep)
+
+        if (self.steps.length) {
+          resolve({regretStep})
+        } else {
+          resolve({regretStep, noRegret: true})
+        }
+
       } else {
         reject()
       }
     })
-
-  } 
+  }
 
   // 撤销悔棋
   revoke () {
@@ -179,7 +180,12 @@ export default class Step extends EventEmitter {
         self.chess[x][y] = player
         self.currentStep++
         self.steps.push(revokeStep)
-        resolve(revokeStep)
+
+        if (self.regretList.length) {
+          resolve({revokeStep})
+        } else {
+          resolve({revokeStep, noRevoke: true})
+        }
       } else {
         reject()
       }
@@ -202,4 +208,12 @@ export default class Step extends EventEmitter {
     return this.currentStep % 2 === 0 ? BLACK : WHITE
   }
 
+  // 
+  checkStepList () {
+    return this.steps.length ? true : false
+  }
+
+  checkRegretList () {
+    return this.regretList.length ? true : false
+  }
 }
