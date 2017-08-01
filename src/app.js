@@ -30,6 +30,11 @@ let timer = null
 // 实例化棋盘对象，用来绘制棋盘，绘制落子 悔棋等样式
 import Chessboard from './chessboard'
 const chessboard = new Chessboard()
+// 选择dom渲染或canvas渲染
+chessboard.renderDom()
+// chessboard.renderCanvas()
+// 绑定下棋事件
+chessboard.bind('click', play)
 
 // 实例化步数对象，处理下棋悔棋撤销等逻辑
 import Step from './step'
@@ -42,15 +47,6 @@ info.on('displayWin', function () {
   btnRegret.removeEventListener('click', regret)
   btnRevoke.removeEventListener('click', revoke)
 })
-
-
-
-// 选择dom渲染或canvas渲染
-chessboard.renderDom()
-// chessboard.renderCanvas()
-
-// 绑定下棋事件
-chessboard.bind('click', play)
 
 // 下棋点击事件
 function play (e) {
@@ -82,6 +78,7 @@ function downChess (x, y) {
       // 一方获胜 默认清除定时器
       clearInterval(timer)
       timer = null
+      info.emit('stopRandom')
 
       // 获取 五子坐标，绘制获胜五子连线
       const winList = step.getWinList()
@@ -185,12 +182,14 @@ function randomDown () {
   if (timer) {
     clearInterval(timer)
     timer = null
+    info.emit('stopRandom')
     if (step.checkStepList()) {
       info.emit('activateRegret')
     }
   } else {
     info.emit('disableRegret')
     info.emit('disableRevoke')
+    info.emit('startRandom')
     timer = setInterval(function () {
       const x = Math.floor(Math.random()*15)
       const y = Math.floor(Math.random()*15)

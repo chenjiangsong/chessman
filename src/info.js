@@ -10,11 +10,14 @@ const infoText = document.querySelector('.play-info')
 const successBoard = document.querySelector('.msg-success')
 const successText = document.querySelector('.success-info')
 const switchText = document.querySelector('.msg-switch')
+const randomText = document.querySelector('.msg-random')
+
 
 const btnRegret = document.getElementById('regret')
 const btnRevoke = document.getElementById('revoke')
 const btnRestart = document.getElementById('restart')
 const btnSwitch = document.getElementById('switch')
+const btnRandom = document.getElementById('random')
 
 // 初始化
 info.on('initInfo', function () {
@@ -61,6 +64,14 @@ info.on('activateRevoke', function () {
 // 禁用 撤销悔棋
 info.on('disableRevoke', function () {
   btnRevoke.setAttribute('disabled', true)
+})
+
+info.on('startRandom', function () {
+  randomText.innerHTML = '停止随机落子测试'
+})
+
+info.on('stopRandom', function () {
+  randomText.innerHTML = '启动随机落子测试'
 })
 
 export default info
