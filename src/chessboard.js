@@ -24,8 +24,8 @@ export default class Chessboard extends EventEmitter {
     this.chessboard = null
     // 棋盘渲染类型 dom or canvas
     this.renderType = ''
-    // 是否已绑定事件
-    this.hasClickHandle = false
+    // 事件锁
+    this.eventLock = false
   }
 
   // dom 渲染
@@ -80,11 +80,15 @@ export default class Chessboard extends EventEmitter {
     }
   }
 
-  // 切换棋盘渲染方式
-  switchRender () {
-    const currentType = this.renderType
-    this.renderType = currentType === 'dom' ? 'canvas' : 'dom'
-    this.reRender()
+  // 切换棋盘渲染方式  保留当前落子局面
+  switchRender (stepList) {
+    const self = this
+    const currentType = self.renderType
+    self.renderType = currentType === 'dom' ? 'canvas' : 'dom'
+    self.reRender()
+    stepList.forEach(function(stepInfo) {
+      self.addChessman(stepInfo)
+    })
   }
 
   /**
@@ -97,7 +101,6 @@ export default class Chessboard extends EventEmitter {
    */
   addChessman (stepInfo) {
     const self = this
-    console.log(stepInfo)
     return new Promise((resolve, reject) => {
       if (self.renderType === 'dom') {
         self._renderDomChessman(stepInfo)

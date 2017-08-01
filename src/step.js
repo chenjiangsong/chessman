@@ -24,6 +24,7 @@ export default class Step extends EventEmitter {
         return 0
       })
     })
+    this.gameover = false
   }
 
   nextStep (x, y) {
@@ -215,5 +216,18 @@ export default class Step extends EventEmitter {
 
   checkRegretList () {
     return this.regretList.length ? true : false
+  }
+
+  getStepList () {
+    return this.steps
+  }
+  // 更新游戏状态
+  updateGameOver (over) {
+    this.gameover = over
+  }
+
+  // 返回游戏状态
+  isGameOver () {
+    return this.gameover
   }
 }

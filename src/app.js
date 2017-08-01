@@ -3,6 +3,11 @@ import Chessboard from './chessboard'
 import Step from './step'
 import info from './info'
 
+const btnRegret = document.getElementById('regret')
+const btnRevoke = document.getElementById('revoke')
+const btnRestart = document.getElementById('restart')
+const btnSwitch = document.getElementById('switch')
+
 // 实例化棋盘对象，用来绘制棋盘，绘制落子 悔棋等样式
 const chessboard = new Chessboard()
 
@@ -12,6 +17,8 @@ const step = new Step()
 // ObserveDisplay(step)
 info.on('displayWin', function () {
   chessboard.unbind('click', play)
+  btnRegret.removeEventListener('click', regret)
+  btnRevoke.removeEventListener('click', revoke)
 })
 
 
@@ -24,21 +31,23 @@ chessboard.renderDom()
 chessboard.bind('click', play)
 
 // 绑定悔棋事件
-document.getElementById('regret').addEventListener('click', regret)
+btnRegret.addEventListener('click', regret)
 
 // 绑定撤销悔棋事件
-document.getElementById('revoke').addEventListener('click', revoke)
+btnRevoke.addEventListener('click', revoke)
 
 // 绑定重开一局事件
-document.getElementById('restart').addEventListener('click', restart)
+btnRestart.addEventListener('click', restart)
 
 // 切换渲染方式
-document.getElementById('switch').addEventListener('click', switchRender)
+btnSwitch.addEventListener('click', switchRender)
 
 
 // 下棋落子 点击事件
 function play (e) {
   const [x, y] = getGridXY(e)
+
+  if (step.isGameOver()) return
   // 使用dom渲染时 有可能点到背景上去
   if (typeof x === 'undefined' || typeof y === 'undefined') return 
 
@@ -55,8 +64,10 @@ function play (e) {
 
     // 检查胜利条件
     if (step.checkWin(x, y)) {
+      step.updateGameOver(true)
       const player = - step.getNextPlayer()
       info.emit('displayWin', player)
+      info.emit('disableRegret')
     }
   })
   
@@ -102,23 +113,29 @@ function restart () {
 
   // 重新绑定事件
   chessboard.bind('click', play)
+  btnRegret.addEventListener('click', regret)
+  btnRevoke.addEventListener('click', revoke)
 
+  info.emit('disableRegret')
   info.emit('initInfo')
+  info.emit('disableRevoke')
 
   step.init()
 }
 
 
 function switchRender () {
-  chessboard.switchRender()
+  const stepList = step.getStepList()
+
+  chessboard.switchRender(stepList)
   // 重新绑定事件
   chessboard.bind('click', play)
 
   info.emit('displaySwitch', chessboard.getRenderType())
 
-  info.emit('initInfo')
+  // info.emit('initInfo')
 
-  step.init()
+  // step.init()
 }
 
 // 获取落子点的坐标
