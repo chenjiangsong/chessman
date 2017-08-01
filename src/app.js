@@ -66,7 +66,6 @@ function downChess (x, y) {
     info.emit('displayInfo', stepInfo.player)
     return chessboard.addChessman(stepInfo)
   }, () => {
-    console.log('点到怪地方去了')
   }).then(() => {
 
     // 落子后 激活悔棋按钮 禁用撤销悔棋
