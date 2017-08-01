@@ -3,6 +3,14 @@
 > 1. 保留棋局的同时切换dom和canvas渲染
 > 2. 随机落子测试
 
+
+demo页：https://chenjiangsong.github.io/chessman/
+
+本地启动： 
+```js
+npm run dev
+```
+
 ## useAge
 
 ```js
