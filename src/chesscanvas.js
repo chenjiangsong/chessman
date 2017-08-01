@@ -29,7 +29,7 @@ export default class Chesscanvas {
     const yPadding = (height - (size - 1) * gridheight) / 2
 
     ctx.beginPath()
-    ctx.lineWidth = 2
+    ctx.lineWidth = 1 * DPR
     
     // 横线
     for (let i = 0; i < size; i++) {
@@ -51,23 +51,23 @@ export default class Chesscanvas {
     ctx.stroke()
   }
 
+  // 绘制棋子
   renderCanvasChessman (stepInfo, resolve) {
-    const { x, y, player, index} = stepInfo
+    const { x, y, player} = stepInfo
     this._drawCircle(x, y, player)
     resolve()
   }
 
+  // 移除棋子
   removeCanvasChessman (stepInfo, resolve) {
-    const { x, y, player, index} = stepInfo
-    console.log(12121)
+    const { x, y, player} = stepInfo
     this._clearCircle(x, y, player)
   }
 
-  // 清除圆
+  // 清除棋子区域并还原
   _clearCircle (x, y, player) {
     const ctx = this.ctx
     const radius = 16
-    console.log(x, y)
     // 圆心坐标
     x = x * 36 + 18
     y = y * 36 + 18
@@ -88,21 +88,26 @@ export default class Chesscanvas {
     
   }
 
+  // 绘制五子连线圆点
+  renderCanvasWinDot (stepInfo) {
+    const { x, y, win} = stepInfo
+    this._drawCircle(x, y, null, 3, '#2d8cf0')
+  }
+
   // 画圆
-  _drawCircle (x, y, player) {
+  _drawCircle (x, y, player, r, color) {
     const ctx = this.ctx
-    const radius = 16
+    const radius = r || 16
     const startAngle = 0
     const endAngle = 2 * Math.PI
     const anticlockwise = true
-
+    const fillColor = color ? color : player === BLACK ? '#000' : '#fff'
     // 圆心坐标
     x = x * 36 + 18
     y = y * 36 + 18
-    console.log(x, y)
     ctx.beginPath()
-    ctx.fillStyle = player === BLACK ? '#000' : '#fff'
-    ctx.arc(x * DPR, y * DPR, radius * DPR, startAngle, endAngle, anticlockwise);
+    ctx.fillStyle = fillColor
+    ctx.arc(x * DPR, y * DPR, radius * DPR, startAngle, endAngle, anticlockwise)
     ctx.fill()
   }
 

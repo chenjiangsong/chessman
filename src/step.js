@@ -25,8 +25,10 @@ export default class Step extends EventEmitter {
       })
     })
     this.gameover = false
+    this.winList = Array.from({length: 5})
   }
 
+  // 下一步
   nextStep (x, y) {
     const self = this
     x = parseInt(x)
@@ -66,6 +68,7 @@ export default class Step extends EventEmitter {
     let right = x + 4 < 14 ? x + 4 : 14
     let top = y - 4 > 0 ? y - 4 : 0
     let bottom = y + 4 < 14 ? y + 4 : 14
+    const player = self.getCurrentPlayer()
 
     if (isRow()) return true
     if (isColumn()) return true
@@ -78,8 +81,17 @@ export default class Step extends EventEmitter {
     function isRow () {
       let sum = 0
       for (let i = left; i < right + 1; i++) {
-        sum += self.chess[i][y]
+        const _thisChess = self.chess[i][y]
+        sum = _thisChess === player ? sum + _thisChess : 0
+     
         if (Math.abs(sum) === 5) {
+          self.winList = Array.from({length: 5}).map((n, index) => {
+            return {
+              x: i - index,
+              y: y,
+              win: true
+            }
+          })
           return true
           break
         }
@@ -91,8 +103,17 @@ export default class Step extends EventEmitter {
     function isColumn () {
       let sum = 0
       for (let i = top; i < bottom + 1; i++) {
-        sum += self.chess[x][i]
+        const _thisChess = self.chess[x][i]
+        sum = _thisChess === player ? sum + _thisChess : 0
+        
         if (Math.abs(sum) === 5) {
+          self.winList = Array.from({length: 5}).map((n, index) => {
+            return {
+              x: x,
+              y: i - index,
+              win: true
+            }
+          })
           return true
           break
         }
@@ -111,8 +132,16 @@ export default class Step extends EventEmitter {
       const len = leftPadding + rightPadding + 1
       let sum = 0
       for (let i = 0; i < len; i++) {
-        sum += self.chess[_left+i][_bottom-i]
+        const _thisChess = self.chess[_left+i][_bottom-i]
+        sum = _thisChess === player ? sum + _thisChess : 0
         if (Math.abs(sum) === 5) {
+          self.winList = Array.from({length: 5}).map((n, index) => {
+            return {
+              x: _left + i - index,
+              y: _bottom - i + index,
+              win: true
+            }
+          })
           return true
           break
         }
@@ -129,22 +158,26 @@ export default class Step extends EventEmitter {
       const _top = y - leftPadding
       const len = leftPadding + rightPadding + 1
       let sum = 0
+
       for (let i = 0; i < len; i++) {
-        sum += self.chess[_left+i][_top+i]
+        const _thisChess = self.chess[_left+i][_top+i]
+        sum = _thisChess === player ? sum + _thisChess : 0
         if (Math.abs(sum) === 5) {
+          self.winList = Array.from({length: 5}).map((n, index) => {
+            const ret =  {
+              x: _left + i - index,
+              y: _top + i - index,
+              win: true
+            }
+            return ret
+          })
+
           return true
           break
         }
       }
       return false
     }
-  }
-
-  // 信息板展示
-  displayInfo () {
-    const nextPlayer = this.getNextPlayer()
-    const text = nextPlayer === BLACK ? '白方执棋' : '黑方执棋'
-    this.infoBoard.innerHTML = text
   }
 
   // 悔棋
@@ -191,14 +224,13 @@ export default class Step extends EventEmitter {
         reject()
       }
     })
-    console.log('我撤销悔棋啦')
   }
 
-  // 重开一局
-  restart () {
-    console.log('我重开一局啦')
+  // 获取胜利棋子坐标数组
+  getWinList () {
+    return this.winList
   }
- 
+
   // 检查当前位置有没有棋子
   checkCurrentStep (x, y) {
     return this.chess[x][y] === 0 ? false : true
@@ -209,15 +241,22 @@ export default class Step extends EventEmitter {
     return this.currentStep % 2 === 0 ? BLACK : WHITE
   }
 
-  // 
+  // 获取当前落子方
+  getCurrentPlayer () {
+    return this.currentStep % 2 === 0 ? WHITE : BLACK
+  }
+
+  // 是否可悔棋
   checkStepList () {
     return this.steps.length ? true : false
   }
 
+  // 是否可撤销悔棋
   checkRegretList () {
     return this.regretList.length ? true : false
   }
 
+  // 获取步骤队列
   getStepList () {
     return this.steps
   }

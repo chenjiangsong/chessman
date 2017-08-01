@@ -111,11 +111,37 @@ export default class Chessboard extends EventEmitter {
     })
   }
 
-  _renderDomChessman (stepInfo) {
-    const {x, y, player, index} = stepInfo
+  // 绘制五子胜利连线圆点
+  renderWinLine (winList) {
+    const self = this
+    winList.forEach((stepInfo) => {
+      self.addWinDot(stepInfo)
+    })
+  }
+
+  // 添加圆点
+  addWinDot (stepInfo) {
+    const self = this
+    if (self.renderType === 'dom') {
+      self._renderWinDot(stepInfo)
+    } else {
+      self.painter.renderCanvasWinDot(stepInfo)
+    }
+  }
+
+  _renderWinDot (stepInfo) {
+    const {x, y} = stepInfo
     const grid = document.getElementById(`grid-${x}-${y}`)
     const chessman = document.createElement('div')
-    // chessman.id = `chessman-${x}-${y}`
+    chessman.className = 'win-dot'
+    chessman.style.backgroundColor = '#2d8cf0'
+    grid.appendChild(chessman)
+  }
+
+  _renderDomChessman (stepInfo) {
+    const {x, y, player} = stepInfo
+    const grid = document.getElementById(`grid-${x}-${y}`)
+    const chessman = document.createElement('div')
     chessman.className = 'chessman'
     chessman.style.backgroundColor = player === BLACK ? 'black' : 'white'
     grid.appendChild(chessman)
@@ -127,42 +153,36 @@ export default class Chessboard extends EventEmitter {
     const self = this
     return new Promise((resolve, reject) => {
       if (self.renderType === 'dom') {
-        console.log(12)
         self._removeDomChessman(stepInfo)
         resolve()
       } else {
-        console.log(11)
         self.painter.removeCanvasChessman(stepInfo, resolve)
       }
     })
   }
 
   _removeDomChessman(stepInfo) {
-    const {x, y, player, index} = stepInfo
+    const {x, y, player} = stepInfo
     const grid = document.getElementById(`grid-${x}-${y}`)
     grid.removeChild(grid.childNodes[0])
   }
 
+  // 获取渲染方式
   getRenderType () {
     return this.renderType
   }
   
   bind (event, fn) {
-    // 防止重复绑定事件
-    // if (this.hasClickHandle) return
-    // this.hasClickHandle = true
     this.chessboard.addEventListener(event, fn)
   }
 
   unbind(event, fn) {
-    // this.hasClickHandle = false
     this.chessboard.removeEventListener(event, fn)
   }
 
-  
 }
 
-
+// 绘制dom网格线
 function createGridDom (x, y) {
   const grid = document.createElement('div')
   let classNames = ['chess-grid']
