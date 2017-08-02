@@ -10,7 +10,7 @@ function resolve (dir) {
 var webpackConfig = {
   entry: {
     app: [
-      './src/app.js'
+      './src/new/app.js'
     ]
   },
   output: {
