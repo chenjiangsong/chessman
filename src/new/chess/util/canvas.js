@@ -1,4 +1,5 @@
 const DPR = window.devicePixelRatio
+const BLACK = 1, WHITE = 2
 
 export function initRenderCanvas () {
   const $chessboard = this.chessboard = document.createElement('canvas')

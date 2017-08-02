@@ -11,7 +11,16 @@ export function _initRender () {
 
 
 
-
-export function _addChessman (x, y, player) {
-
+/**
+ * 
+ * @param {*} x
+ * @param {*} y
+ * @param {*} nextPlayer
+ */
+export function _addChessman ({x, y, player}) {
+  if (this.renderType === 'dom') {
+    _.renderChessmanDom(x, y, player)
+  } else {
+    this._renderCanvas()
+  }
 }

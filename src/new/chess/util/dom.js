@@ -1,3 +1,5 @@
+const BLACK = 1, WHITE = 2
+
 export function createGrid (x, y) {
   const grid = document.createElement('div')
   let classNames = ['chess-grid']
@@ -23,4 +25,12 @@ export function initRenderDom () {
       $chessboard.appendChild(createGrid(i, j))
     }
   }
+}
+
+export function renderChessmanDom (x, y, player) {
+  const grid = document.getElementById(`grid-${x}-${y}`)
+  const chessman = document.createElement('div')
+  chessman.className = 'chessman'
+  chessman.style.backgroundColor = player === BLACK ? 'black' : 'white'
+  grid.appendChild(chessman)
 }

@@ -34,8 +34,10 @@ export function getDownPosition (e) {
   if (e.target.nodeName.toLowerCase() === 'canvas') {
     x = Math.floor(e.offsetX / 36)
     y = Math.floor(e.offsetY / 36)
-  } else if (e.target.id !== 'chessboard') {
+  } else if (e.target.id && e.target.id !== 'chessboard') {
+    console.log(e.target.id)
     const ids = e.target.id.split('-')
+    console.log(ids)
     x = parseInt(ids[1])
     y = parseInt(ids[2])
   } else {
