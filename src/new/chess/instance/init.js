@@ -1,4 +1,4 @@
-import * as _ from '../util'
+import { createTwoArray } from '../util/lang' 
 
 /**
  * 
@@ -19,7 +19,7 @@ export function _init(options) {
 
 
   // 棋局过程属性
-  this.chess = _.createTwoArray(15)
+  this.chess = createTwoArray(15)
     // 步数队列
   this.steps = []  
     // 悔棋队列

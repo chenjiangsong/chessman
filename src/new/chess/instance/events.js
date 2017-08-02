@@ -1,4 +1,4 @@
-import * as _ from '../util'
+import { getDownPosition } from '../util/lang'
 
 export function _initEvent () {
   this._bindClickPlay()
@@ -80,7 +80,7 @@ export function _bindSwitch () {
 
 
 function playChess (e) {
-  const [x, y] = _.getDownPosition(e)
+  const [x, y] = getDownPosition(e)
 
   if (typeof x !== 'undefined' && typeof y !== 'undefined') {
     this._nextStep(x, y)
