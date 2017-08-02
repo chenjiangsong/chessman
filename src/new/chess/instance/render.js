@@ -1,26 +1,48 @@
-import * as _ from '../util'
+import {
+  renderChessboardDom,
+  renderChessmanDom,
+  removeChessmanDom
+} from '../util/dom'
 
+import {
+  renderChessboardCanvas,
+  renderChessmanCanvas
+} from '../util/canvas'
+
+/**
+ * 初始化渲染
+ * return 
+ */
 export function _initRender () {
   if (this.renderType === 'dom') {
-    _.initRenderDom.call(this)
+    renderChessboardDom(this)
   } else {
-    this._renderCanvas()
+    renderChessboardCanvas(this)
   }
 }
 
-
-
-
 /**
- * 
+ * 添加棋子
  * @param {*} x
  * @param {*} y
  * @param {*} nextPlayer
  */
 export function _addChessman ({x, y, player}) {
   if (this.renderType === 'dom') {
-    _.renderChessmanDom(x, y, player)
+    renderChessmanDom(x, y, player)
   } else {
-    this._renderCanvas()
+    renderChessmanCanvas(this.ctx, x, y, player)
+  }
+}
+
+/**
+ * 移除棋子
+ * @param {*} param0 
+ */
+export function _removeChessman ({x, y, player}) {
+  if (this.renderType === 'dom') {
+    removeChessmanDom(x, y, player)
+  } else {
+    removeChessmanCanvas(this.ctx, x, y, player)
   }
 }

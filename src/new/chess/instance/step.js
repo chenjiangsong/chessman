@@ -1,3 +1,9 @@
+import {
+  checkRow,
+  checkColumn,
+  check45deg,
+  check135deg
+} from '../util/win'
 
 const BLACK = 1, WHITE = 2
 
@@ -7,41 +13,100 @@ const BLACK = 1, WHITE = 2
  * @param {number} y 
  */
 export function _nextStep(x, y) {
-  if (this.chess[x][y] === 0) {
-    const nextPlayer = _getNextPlayer.call(this)
-    const data = {x, y, player: nextPlayer}
+  if (this.chess[x][y] === 0 && !this.isWin) {
+    const nextPlayer = this._getNextPlayer()
+    const step = {x, y, player: nextPlayer}
 
-      // 更新棋盘状态
-    this._updateStep(data)
+    this._updateStep(step, true)
+      // 置为可悔棋状态且不可撤销悔棋状态
+    this.canRegret = true
+    this.canRevoke = false
+      // 执行options里play钩子函数
+    this.playHandler && this.playHandler.call(null, step)
 
-      // 执行棋盘点击勾子函数
-    this.clickHandler.call(null, data)
-
-      // 检查胜利条件
-    this._checkWin()
+    this._checkWin(step)
   }
 }
 
-export function _updateStep (data) {
-  // 填充[x][y] 
-  this.chess[x][y] = nextPlayer
-    // 将这一步棋推入steps
-  this.steps.push(data)
-    // 绘制棋子
-  this._addChessman(data)
-    // 置为可悔棋状态
-  this.canRegret = true
+
+/**
+ * 悔棋
+ */
+export function _regretStep () {
+  if (!this.randomTimer && this.canRegret) {
+    const regretStep = this.steps.pop()
+    const {x, y, player} = regretStep
+
+    this._updateStep(regretStep, false)
+
+    this.canRevoke = true
+      // 若steps队列里没有数据，则置为不可悔棋状态
+    if (!this.steps.length) {
+      this.canRegret = false
+    }
+      // 执行options里regret钩子函数
+    this.regretHandler && this.regretHandler.call(null, regretStep)
+  }
 }
 
-export function _checkWin () {
+/**
+ * 撤销悔棋
+ */
+export function _revokeStep () {
+  if (!this.randomTimer && this.canRevoke) {
+    const revokeStep = this.regrets.pop()
+    const {x, y, player} = revokeStep
 
+    this._updateStep(revokeStep, true)
+      // 若regrets队列里没有数据，则置为不可撤销悔棋状态
+    if (!this.regrets.length) {
+      this.canRevoke = false
+    }
+      // 执行options里revoke钩子函数
+    this.revokeHandler && this.revokeHandler.call(null, regretStep)
+  }
+}
+
+/**
+ * 更新棋盘状态
+ * @param {*} step
+ * @param isAdd : true 落子or撤销悔棋  false 悔棋 
+ */
+export function _updateStep (step, isAdd = true) {
+  const {x, y, player} = step
+  if (isAdd) {
+    this.chess[x][y] = player
+    this.steps.push(step)
+    this._addChessman(step)
+  } else {
+    this.chess[x][y] = 0
+    this.regrets.push(step)
+    this._removeChessman(step)
+  }
+}
+
+/**
+ *  检查棋局胜利条件
+ *  将this.chess棋局状态和当前step作为参数判断胜负
+ * @param {*} step 当前步
+ */
+export function _checkWin (step) {
+  const chess = this.chess
+
+  if (checkRow(chess, step) ||
+      checkColumn(chess, step) ||
+      check45deg(chess, step) ||
+      check135deg(chess, step)
+  ) {
+    this.isWin = true
+  }
 }
 
 
 /**
  * 从steps列表获取上一步是白方还是黑方，来确定下一步哪方
  */
-function _getNextPlayer () {
+export function _getNextPlayer () {
   const len = this.steps.length
   if (!len) {
     return BLACK

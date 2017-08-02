@@ -1,21 +1,34 @@
 const DPR = window.devicePixelRatio
 const BLACK = 1, WHITE = 2
+// 棋盘宽度高度
+const WIDTH = 540, HEIGHT = 540
 
-export function initRenderCanvas () {
-  const $chessboard = this.chessboard = document.createElement('canvas')
-  $chessboard.id = this.options.id
+/**
+ * canvas 渲染棋盘
+ * @param {*} self 
+ * @param {*} defer  promise {resolve, reject}
+ */
+export function renderChessboardCanvas (self) {
+  const $chessboard = self.chessboard = document.createElement('canvas')
+  $chessboard.id = 'chessboard'
   $chessboard.className = 'chessboard'
-  chessboard.width = width * DPR
-  chessboard.height = height * DPR
-  this.chessWrap.appendChild(chessboard)
+  $chessboard.width = WIDTH * DPR
+  $chessboard.height = HEIGHT * DPR
+  self.$root.appendChild($chessboard)
 
-  const ctx = this.ctx = chessboard.getContext('2d')
-
-  painter.renderChessboard()
+  const ctx = self.ctx = $chessboard.getContext('2d')
+  drawChessboard(ctx)
 }
 
-function drawChessboard (ctx) {
-  const width = 540, height = 540
+export function renderChessmanCanvas (ctx, x, y, player) {
+  const color = player === BLACK ? '#000' : '#FFF'
+    // 计算圆心坐标
+  x = x * 36 + 18
+  y = y * 36 + 18
+  drawCircle(ctx, x, y, color)
+}
+
+export function drawChessboard (ctx) {
   // 棋盘背景
   ctx.fillStyle = '#F9CC9D'
   ctx.fillRect(0, 0, 540 * DPR, 540 * DPR)
@@ -28,19 +41,19 @@ function drawChessboard (ctx) {
   ctx.lineWidth = 1 * DPR
   
   // 横线
-  for (let i = 0; i < size; i++) {
+  for (let i = 0; i < 15; i++) {
     const fromX = xPadding,
-          fromY = yPadding + gridheight * i,
-          toX = width - xPadding,
+          fromY = yPadding + 36 * i,
+          toX = WIDTH - xPadding,
           toY = fromY
     drawLine(ctx, fromX,fromY, toX, toY)
   }
   // 纵线
-  for (let j = 0; j < size; j++) {
-    const fromX = xPadding + gridWidth * j,
+  for (let j = 0; j < 15; j++) {
+    const fromX = xPadding + 36 * j,
           fromY = yPadding,
           toX = fromX,
-          toY = height - yPadding
+          toY = HEIGHT - yPadding
     drawLine(ctx, fromX,fromY, toX, toY)
   }
 
@@ -76,8 +89,7 @@ export function drawCircle (ctx, x, y, color, radius) {
   const anticlockwise = true
 
   radius = radius || 16
-  //x = x * 36 + 18
-  //y = y * 36 + 18
+  
   ctx.beginPath()
   ctx.fillStyle = color
   ctx.arc(x * DPR, y * DPR, radius * DPR, startAngle, endAngle, anticlockwise)
