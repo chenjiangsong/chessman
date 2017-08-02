@@ -51,7 +51,20 @@ function watchIsWin (self) {
     if (value) {
       self.canRegret = false
       self.canRevoke = false
+      self.randomTimer = null
       console.log('赢啦赢啦')
+    }
+  })
+}
+
+function watchRandom (self) {
+  observe(self, 'randomTimer', false, (value) =>{
+    if (value) {
+      self.canRegret = false
+      self.canRevoke = false
+    } else {
+      self.canRegret = true
+      self.canRevoke = false
     }
   })
 }

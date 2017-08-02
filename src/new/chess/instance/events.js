@@ -50,6 +50,17 @@ export function _bindRestart () {
  */
 export function _bindRandom () {
   document.getElementById('random').addEventListener('click',  () => {
+    const self = this
+    if (self.randomTimer) {
+      clearInterval(self.randomTimer)
+      self.randomTimer = null
+    } else {
+      self.randomTimer = setInterval(function () {
+        const x = Math.floor(Math.random()*15)
+        const y = Math.floor(Math.random()*15)
+        self._nextStep(x, y)
+      }, 100)
+    }
     // if (!this.randomTimer && this.canRevoke) {
     //   this._restartStep()
     // }

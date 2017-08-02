@@ -4,7 +4,7 @@ const BLACK = 1, WHITE = 2
 const WIDTH = 540, HEIGHT = 540
 
 /**
- * canvas 渲染棋盘
+ * canvas 创建棋盘
  * @param {*} self 
  * @param {*} defer  promise {resolve, reject}
  */
@@ -20,6 +20,13 @@ export function renderChessboardCanvas (self) {
   drawChessboard(ctx)
 }
 
+/**
+ * 创建棋子
+ * @param {*} ctx 
+ * @param {*} x 
+ * @param {*} y 
+ * @param {*} player 
+ */
 export function renderChessmanCanvas (ctx, x, y, player) {
   const color = player === BLACK ? '#000' : '#FFF'
     // 计算圆心坐标
@@ -28,6 +35,10 @@ export function renderChessmanCanvas (ctx, x, y, player) {
   drawCircle(ctx, x, y, color)
 }
 
+/**
+ * 渲染棋盘
+ * @param {*} ctx 
+ */
 export function drawChessboard (ctx) {
   // 棋盘背景
   ctx.fillStyle = '#F9CC9D'
@@ -59,6 +70,7 @@ export function drawChessboard (ctx) {
 
   ctx.stroke()
 }
+
 /**
  * canvas 画线
  * @param {canvas context} ctx 

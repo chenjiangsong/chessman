@@ -7,12 +7,11 @@ const BLACK = 1, WHITE = 2
  */
 export function checkRow (chess, step) {
   const {x, y, player} = step
-  let ruler = '',
-      left = x - 4, right = x + 4
+  let left = x - 4 > 0 ? x - 4 : 0
+  let right = x + 4 < 14 ? x + 4 : 14
 
-  left = left < 0 ? 0 : left
-  right = right > 14 ? 14 : right
-
+  
+  let ruler = ''  
   for (let i = left; i <= right; i++) {
     ruler += chess[i][y]
   }
@@ -27,12 +26,10 @@ export function checkRow (chess, step) {
  */
 export function checkColumn (chess, step) {
   const {x, y, player} = step
-  let ruler = '',
-      top = y - 4, bottom = y + 4
-
-  top = top < 0 ? 0 : top
-  bottom = bottom > 14 ? 14 : bottom
-
+  let top = y - 4 > 0 ? y - 4 : 0
+  let bottom = y + 4 < 14 ? y + 4 : 14
+  
+  let ruler = ''
   for (let i = top; i <= bottom; i++) {
     ruler += chess[x][i]
   }
@@ -47,7 +44,24 @@ export function checkColumn (chess, step) {
  */
 export function check45deg (chess, step) {
   const {x, y, player} = step
+  
+  const left = x - 4 > 0 ? x - 4 : 0
+  const right = x + 4 < 14 ? x + 4 : 14
+  const top = y - 4 > 0 ? y - 4 : 0
+  const bottom = y + 4 < 14 ? y + 4 : 14
 
+  const leftPadding = (x - left) > (bottom - y) ? (bottom - y) : (x - left)
+  const rightPadding = (right - x) > (y - top) ? (y - top) : (right - x)
+  const _left = x - leftPadding
+  const _bottom = y + leftPadding
+  const len = leftPadding + rightPadding + 1
+  
+  let ruler = ''
+  for (let i = 0; i < len; i++) {
+    ruler += chess[_left+i][_bottom-i]
+  }
+
+  return testWin(player, ruler)
 }
 
 /**
@@ -57,6 +71,24 @@ export function check45deg (chess, step) {
  */
 export function check135deg (chess, step) {
   const {x, y, player} = step
+
+  const left = x - 4 > 0 ? x - 4 : 0
+  const right = x + 4 < 14 ? x + 4 : 14
+  const top = y - 4 > 0 ? y - 4 : 0
+  const bottom = y + 4 < 14 ? y + 4 : 14
+
+  const leftPadding = (x - left) > (y - top) ? (y - top) : (x - left)
+  const rightPadding = (right - x) > (bottom - y) ? (bottom - y) : (right - x)
+  const _left = x - leftPadding
+  const _top = y - leftPadding
+  const len = leftPadding + rightPadding + 1
+
+  let ruler = ''
+  for (let i = 0; i < len; i++) {
+    ruler += chess[_left+i][_top+i]
+  }
+
+  return testWin(player, ruler)
 }
 
 /**
