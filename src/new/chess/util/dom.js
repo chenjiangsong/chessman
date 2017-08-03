@@ -61,16 +61,11 @@ export function renderChessmanDom (x, y, player) {
  */
 export function removeChessmanDom (x, y, player) {
   const grid = document.getElementById(`grid-${x}-${y}`)
-  // console.log(grid.childNodes)
-  while(grid.hasChildNodes()) //当div下还存在子节点时 循环继续  
-  {  
-      grid.removeChild(grid.firstChild);  
-  }  
-  // const nodes = grid.childNodes
-  // Array.prototype.forEach.call(nodes, (node => {
-  //   console.log('node')
-  //   // grid.removeChild(node)
-  // }))
+
+  while (grid.hasChildNodes()) {  
+    grid.removeChild(grid.firstChild);  
+  }
+  
 }
 
 /**

@@ -40,9 +40,4 @@ export function _initProperty () {
   this.canRegret = false
   this.canRevoke = false
   this.canRrestart = false
-
-  if (this.randomTimer) {
-    clearInterval(this.randomTimer)
-  }
-  this.randomTimer = null
 }

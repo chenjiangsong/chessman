@@ -1,4 +1,5 @@
 import Chess from './chess'
+const playInfo = document.querySelector('.play-info')
 
 /**
  * play,
@@ -8,17 +9,17 @@ import Chess from './chess'
  */
 const chess = new Chess({
   id: 'chess',
-  renderType: 'dom',
+  renderType: 'canvas',
   play: function (step) {
     const {x, y, player} = step
-    console.log(`我在第${y}行第${x}列下了${player === 1 ? '黑' : '白'}子`)
+    playInfo.innerHTML = `我在第${y+1}行第${x+1}列下了${player === 1 ? '黑' : '白'}子`
   },
   regret: function (step) {
     const {x, y, player} = step
-    console.log(`我在第${y}行第${x}列悔棋了${player === 1 ? '黑' : '白'}子`)
+    playInfo.innerHTML = `我在第${y+1}行第${x+1}列悔棋了${player === 1 ? '黑' : '白'}子`
   },
   revoke: function (step) {
     const {x, y, player} = step
-    console.log(`我在第${y}行第${x}列撤销悔棋了${player === 1 ? '黑' : '白'}子`)
+    playInfo.innerHTML = `我在第${y+1}行第${x+1}列撤销悔棋了${player === 1 ? '黑' : '白'}子`
   }
 })

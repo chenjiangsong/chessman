@@ -62,3 +62,19 @@ export function getDownPosition (e) {
 
   return [x, y]
 }
+
+/**
+ * 显示dom
+ * @param {*} dom 
+ */
+export function show (dom) {
+  dom.style.display = 'block'
+}
+
+/**
+ * 隐藏dom
+ * @param {*} dom 
+ */
+export function hide (dom) {
+  dom.style.display = 'none'
+}

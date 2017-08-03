@@ -33,7 +33,7 @@ export function _nextStep(x, y) {
  * 悔棋
  */
 export function _regretStep () {
-  if (!this.randomTimer && this.canRegret) {
+  if (this.canRegret) {
     const regretStep = this.steps.pop()
     const {x, y, player} = regretStep
 
@@ -41,7 +41,7 @@ export function _regretStep () {
 
     this.canRevoke = true
       // 若steps队列里没有数据，则置为不可悔棋状态
-    if (!this.steps.length || this.randomTimer) {
+    if (!this.steps.length) {
       this.canRegret = false
     }
       // 执行options里regret钩子函数
@@ -53,13 +53,14 @@ export function _regretStep () {
  * 撤销悔棋
  */
 export function _revokeStep () {
-  if (!this.randomTimer && this.canRevoke) {
+  if (this.canRevoke) {
     const revokeStep = this.regrets.pop()
     const {x, y, player} = revokeStep
 
     this._updateStep(revokeStep, true)
       // 若regrets队列里没有数据，则置为不可撤销悔棋状态
     if (!this.regrets.length) {
+      this.canRegret = true
       this.canRevoke = false
     }
       // 执行options里revoke钩子函数
@@ -91,8 +92,6 @@ export function _updateStep (step, isAdd = true) {
  * @param {*} step 当前步
  */
 export function _checkWin (step) {
-  // const chess = this.chess
-
   if (checkRow(this, step) ||
       checkColumn(this, step) ||
       check45deg(this, step) ||
@@ -107,6 +106,7 @@ export function _checkWin (step) {
  * 棋局重开
  */
 export function _restartStep () {
+  this.restart = true
   this._reRender()
   this._initProperty()
 }

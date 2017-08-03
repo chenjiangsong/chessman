@@ -14,7 +14,10 @@ export function _initEvent () {
  */
 export function _bindClickPlay () {
   document.getElementById('chess').addEventListener('click',  (e) => {
-    playChess.call(this, e)
+    const [x, y] = getDownPosition(e)
+    if (typeof x !== 'undefined' && typeof y !== 'undefined') {
+      this._nextStep(x, y)
+    }
   })
 }
 
@@ -43,48 +46,4 @@ export function _bindRestart () {
   document.getElementById('restart').addEventListener('click',  () => {
     this._restartStep()
   })
-}
-
-/**
- * 随机落子测试事件
- */
-export function _bindRandom () {
-  document.getElementById('random').addEventListener('click',  () => {
-    const self = this
-
-    if (self.isWin) {
-      this._restartStep()
-    }
-
-    if (self.randomTimer) {
-      clearInterval(self.randomTimer)
-      self.randomTimer = null
-    } else {
-      self.randomTimer = setInterval(function () {
-        const x = Math.floor(Math.random()*15)
-        const y = Math.floor(Math.random()*15)
-        self._nextStep(x, y)
-      }, 100)
-    }
-  })
-}
-
-/**
- * 切换dom/canvas渲染事件
- */
-export function _bindSwitch () {
-  document.getElementById('switch').addEventListener('click',  () => {
-    // if (!this.randomTimer && this.canRevoke) {
-    //   this._restartStep()
-    // }
-  })
-}
-
-
-function playChess (e) {
-  const [x, y] = getDownPosition(e)
-
-  if (typeof x !== 'undefined' && typeof y !== 'undefined') {
-    this._nextStep(x, y)
-  }
 }

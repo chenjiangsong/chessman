@@ -56,7 +56,8 @@ export function removeChessmanCanvas (ctx, x, y, player) {
 
 export function renderWinDotCanvas (ctx, wins, winner) {
   wins.forEach(function(step) {
-    if (step.player === winner) {
+    let {x, y, player} = step
+    if (player === winner) {
         // 计算圆心坐标
       x = x * 36 + 18
       y = y * 36 + 18

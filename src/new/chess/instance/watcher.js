@@ -1,4 +1,10 @@
-import { observe } from '../util/lang'
+import { 
+  observe,
+  show,
+  hide
+} from '../util/lang'
+
+const BLACK = 1, WHITE = 2
 
 const btnRegret = document.getElementById('regret')
 const btnRevoke = document.getElementById('revoke')
@@ -6,12 +12,16 @@ const btnRestart = document.getElementById('restart')
 const btnSwitch = document.getElementById('switch')
 const btnRandom = document.getElementById('random')
 
+const successBlack = document.querySelector('.msg-success-black')
+const successWhite = document.querySelector('.msg-success-white')
+const infoBoard = document.querySelector('.msg-info')
+const playInfo = document.querySelector('.play-info')
 
 export function _initWatcher () {
   watchRegret(this)  
   watchRevoke(this)
+  watchRestart(this)
   watchIsWin(this)
-  watchRandom(this)
 }
 
 /**
@@ -20,8 +30,7 @@ export function _initWatcher () {
  */
 function watchRegret (self) {
   observe(self, 'canRegret', false, (value) => {
-    console.log('canRegret', value)
-    if (!self.randomTimer && value) {
+    if (value) {
       btnRegret.removeAttribute('disabled')
     } else {
       btnRegret.setAttribute('disabled', true)
@@ -35,10 +44,26 @@ function watchRegret (self) {
  */
 function watchRevoke (self) {
   observe(self, 'canRevoke', false, (value) =>{
-    if (!self.randomTimer && value) {
+    if (value) {
       btnRevoke.removeAttribute('disabled')
     } else {
       btnRevoke.setAttribute('disabled', true)
+    }
+  })
+}
+
+/**
+ * 监听restart属性，控制撤销悔棋按钮样式
+ * @param {*} self 
+ */
+function watchRestart (self) {
+  observe(self, 'restart', false, (value) =>{
+    if (value) {
+      self.restart = false
+      playInfo.innerHTML = '黑方执棋'
+      show(infoBoard)
+      hide(successBlack)
+      hide(successWhite)
     }
   })
 }
@@ -50,26 +75,11 @@ function watchRevoke (self) {
 function watchIsWin (self) {
   observe(self, 'isWin', false, (value) =>{
     if (value) {
-      clearInterval(self.randomTimer)
-      self.randomTimer = null
-
+      const winner = self.steps.slice(-1)[0].player
       self.canRegret = false
       self.canRevoke = false
-      console.log('赢啦赢啦')
-    }
-  })
-}
-
-function watchRandom (self) {
-  observe(self, 'randomTimer', false, (value) =>{
-    console.log(value)
-    if (value) {
-      self.canRegret = false
-      self.canRevoke = false
-    } else {
-      console.log('清除定时器了')
-      self.canRegret = true
-      self.canRevoke = false
+      hide(infoBoard)
+      show(winner === BLACK ? successBlack : successWhite)
     }
   })
 }
