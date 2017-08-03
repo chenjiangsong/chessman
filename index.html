@@ -10,11 +10,11 @@
 <body>
   <div id="app" class="app">
     <!-- 棋盘部分 -->
-    <div id="chess-wrap" class="chess-wrap">
-    </div>
+     <div id="chess" class="chess-wrap">
+    </div> 
     
     <!-- 按钮部分 -->
-    <div class="options-wrap">
+     <div class="options-wrap">
 
       <div class="msg msg-title">
         <span class="icon">
@@ -34,12 +34,21 @@
         </span>
       </div>
 
-      <div class="msg msg-success">
+      <div class="msg msg-success msg-success-black">
         <span class="icon">
           <i class="iconfont icon-success"></i>
         </span>
         <span class="message success-info">
           黑方获胜
+        </span>
+      </div>
+      
+      <div class="msg msg-success msg-success-white">
+        <span class="icon">
+          <i class="iconfont icon-success"></i>
+        </span>
+        <span class="message success-info">
+          白方获胜
         </span>
       </div>
 
@@ -58,7 +67,7 @@
         重开一局
       </div>
 
-      <div class="btn btn-restart" id="random">
+      <!-- <div class="btn btn-restart" id="random">
         <i class="iconfont icon-suiji"></i>
         <span class="msg-random">启动随机落子测试</span>
       </div>
@@ -66,8 +75,8 @@
       <div class="btn btn-switch" id="switch">
         <i class="iconfont icon-qiehuan"></i>
         <span class="msg-switch">点击切换成CANVAS渲染</span>
-      </div>
-    </div>
+      </div> -->
+    </div> 
   </div>
 <script type="text/javascript" src="app.js"></script></body>
 </html>
