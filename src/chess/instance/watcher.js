@@ -17,6 +17,11 @@ const successWhite = document.querySelector('.msg-success-white')
 const infoBoard = document.querySelector('.msg-info')
 const playInfo = document.querySelector('.play-info')
 
+/**
+ * 使用数据劫持监听
+ * canRegret, canRevoke, restart, isWin 四个属性
+ * 属性发生改变时，触发对应的dom操作回调函数，替代EventEmitter，简化step逻辑
+ */
 export function _initWatcher () {
   watchRegret(this)  
   watchRevoke(this)

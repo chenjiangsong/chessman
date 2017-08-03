@@ -5,8 +5,6 @@ export function _initEvent () {
   this._bindRegret()
   this._bindRevoke()
   this._bindRestart()
-  // this._bindRandom()
-  // this._bindSwitch()
 }
 
 /**

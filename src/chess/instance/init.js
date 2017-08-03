@@ -1,7 +1,7 @@
 import { createTwoArray } from '../util/lang' 
 
 /**
- * 
+ * 初始化
  * @param {*} options 
  */
 export function _init(options) {

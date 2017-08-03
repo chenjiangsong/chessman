@@ -63,7 +63,7 @@ export function _renderWinDot (winner) {
 }
 
 /**
- * 重新渲染
+ * 重新渲染棋盘
  */
 export function _reRender () {
   const steps = this.steps
