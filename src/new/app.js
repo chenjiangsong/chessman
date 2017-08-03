@@ -17,7 +17,7 @@ const chess = new Chess({
     const {x, y, player} = step
     console.log(`我在第${y}行第${x}列悔棋了${player === 1 ? '黑' : '白'}子`)
   },
-  regret: function (step) {
+  revoke: function (step) {
     const {x, y, player} = step
     console.log(`我在第${y}行第${x}列撤销悔棋了${player === 1 ? '黑' : '白'}子`)
   }

@@ -41,7 +41,7 @@ export function _regretStep () {
 
     this.canRevoke = true
       // 若steps队列里没有数据，则置为不可悔棋状态
-    if (!this.steps.length) {
+    if (!this.steps.length || this.randomTimer) {
       this.canRegret = false
     }
       // 执行options里regret钩子函数
@@ -63,7 +63,7 @@ export function _revokeStep () {
       this.canRevoke = false
     }
       // 执行options里revoke钩子函数
-    this.revokeHandler && this.revokeHandler.call(null, regretStep)
+    this.revokeHandler && this.revokeHandler.call(null, revokeStep)
   }
 }
 
@@ -91,17 +91,25 @@ export function _updateStep (step, isAdd = true) {
  * @param {*} step 当前步
  */
 export function _checkWin (step) {
-  const chess = this.chess
+  // const chess = this.chess
 
-  if (checkRow(chess, step) ||
-      checkColumn(chess, step) ||
-      check45deg(chess, step) ||
-      check135deg(chess, step)
+  if (checkRow(this, step) ||
+      checkColumn(this, step) ||
+      check45deg(this, step) ||
+      check135deg(this, step)
   ) {
     this.isWin = true
+    this._renderWinDot(step.player)
   }
 }
 
+/**
+ * 棋局重开
+ */
+export function _restartStep () {
+  this._reRender()
+  this._initProperty()
+}
 
 /**
  * 从steps列表获取上一步是白方还是黑方，来确定下一步哪方

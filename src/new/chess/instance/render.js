@@ -1,12 +1,15 @@
 import {
   renderChessboardDom,
   renderChessmanDom,
-  removeChessmanDom
+  removeChessmanDom,
+  renderWinDotDom
 } from '../util/dom'
 
 import {
   renderChessboardCanvas,
-  renderChessmanCanvas
+  renderChessmanCanvas,
+  removeChessmanCanvas,
+  renderWinDotCanvas
 } from '../util/canvas'
 
 /**
@@ -44,5 +47,27 @@ export function _removeChessman ({x, y, player}) {
     removeChessmanDom(x, y, player)
   } else {
     removeChessmanCanvas(this.ctx, x, y, player)
+  }
+}
+
+/**
+ *  渲染胜利成员
+ */
+export function _renderWinDot (winner) {
+  const wins = this.wins
+  if (this.renderType === 'dom') {
+    renderWinDotDom(wins, winner)
+  } else {
+    renderWinDotCanvas(this.ctx, wins, winner)
+  }
+}
+
+/**
+ * 重新渲染
+ */
+export function _reRender () {
+  const steps = this.steps
+  while (steps.length) {
+    this._removeChessman(steps.pop())
   }
 }

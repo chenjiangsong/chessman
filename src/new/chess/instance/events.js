@@ -5,8 +5,8 @@ export function _initEvent () {
   this._bindRegret()
   this._bindRevoke()
   this._bindRestart()
-  this._bindRandom()
-  this._bindSwitch()
+  // this._bindRandom()
+  // this._bindSwitch()
 }
 
 /**
@@ -51,6 +51,11 @@ export function _bindRestart () {
 export function _bindRandom () {
   document.getElementById('random').addEventListener('click',  () => {
     const self = this
+
+    if (self.isWin) {
+      this._restartStep()
+    }
+
     if (self.randomTimer) {
       clearInterval(self.randomTimer)
       self.randomTimer = null
@@ -61,9 +66,6 @@ export function _bindRandom () {
         self._nextStep(x, y)
       }, 100)
     }
-    // if (!this.randomTimer && this.canRevoke) {
-    //   this._restartStep()
-    // }
   })
 }
 

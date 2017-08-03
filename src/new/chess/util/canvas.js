@@ -36,6 +36,37 @@ export function renderChessmanCanvas (ctx, x, y, player) {
 }
 
 /**
+ * 移除棋子
+ * @param {*} ctx 
+ * @param {*} x 
+ * @param {*} y 
+ * @param {*} player 
+ */
+export function removeChessmanCanvas (ctx, x, y, player) {
+  const color = '#F9CC9D'
+    // 计算圆心坐标
+  x = x * 36 + 18
+  y = y * 36 + 18
+  clearCircle(ctx, x, y, color)
+}
+
+/**
+ * 创建胜利圆点
+ */
+
+export function renderWinDotCanvas (ctx, wins, winner) {
+  wins.forEach(function(step) {
+    if (step.player === winner) {
+        // 计算圆心坐标
+      x = x * 36 + 18
+      y = y * 36 + 18
+      drawCircle(ctx, x, y, '#2d8cf0', 3)
+    }
+  }, this);
+}
+
+
+/**
  * 渲染棋盘
  * @param {*} ctx 
  */
@@ -120,13 +151,13 @@ export function clearCircle (ctx, x, y, backgroundColor, radius) {
   // 圆心坐标
   // x = x * 36 + 18
   // y = y * 36 + 18
-
+  radius = radius || 16
   // 清除包含棋子的矩形区域
   const data = [(x - radius) * DPR , (y - radius) * DPR, 2 * radius * DPR , 2 * radius * DPR]
   ctx.clearRect.apply(ctx, data)
 
   // 背景还原
-  ctx.fillStyle = backgroundColor
+  ctx.fillStyle = backgroundColor || '#F9CC9D'
   ctx.fillRect.apply(ctx, data)
 
   // 格线还原

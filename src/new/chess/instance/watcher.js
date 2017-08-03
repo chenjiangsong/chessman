@@ -11,6 +11,7 @@ export function _initWatcher () {
   watchRegret(this)  
   watchRevoke(this)
   watchIsWin(this)
+  watchRandom(this)
 }
 
 /**
@@ -19,7 +20,7 @@ export function _initWatcher () {
  */
 function watchRegret (self) {
   observe(self, 'canRegret', false, (value) => {
-    console.log('canRegret',value)
+    console.log('canRegret', value)
     if (!self.randomTimer && value) {
       btnRegret.removeAttribute('disabled')
     } else {
@@ -49,9 +50,11 @@ function watchRevoke (self) {
 function watchIsWin (self) {
   observe(self, 'isWin', false, (value) =>{
     if (value) {
+      clearInterval(self.randomTimer)
+      self.randomTimer = null
+
       self.canRegret = false
       self.canRevoke = false
-      self.randomTimer = null
       console.log('赢啦赢啦')
     }
   })
@@ -59,10 +62,12 @@ function watchIsWin (self) {
 
 function watchRandom (self) {
   observe(self, 'randomTimer', false, (value) =>{
+    console.log(value)
     if (value) {
       self.canRegret = false
       self.canRevoke = false
     } else {
+      console.log('清除定时器了')
       self.canRegret = true
       self.canRevoke = false
     }

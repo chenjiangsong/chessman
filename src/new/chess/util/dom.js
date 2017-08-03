@@ -21,24 +21,6 @@ export function renderChessboardDom (self) {
 }
 
 /**
- * 绘制棋子并添加到棋盘上
- * @param {*} x 
- * @param {*} y 
- * @param {*} player 
- */
-export function renderChessmanDom (x, y, player) {
-  const grid = document.getElementById(`grid-${x}-${y}`)
-  const chessman = document.createElement('div')
-  chessman.className = 'chessman'
-  chessman.style.backgroundColor = player === BLACK ? 'black' : 'white'
-  grid.appendChild(chessman)
-}
-
-export function removeChessmanDom (x, y, player) {
-  const grid = document.getElementById(`grid-${x}-${y}`)
-  grid.removeChild(grid.childNodes[0])
-}
-/**
  * 创建棋盘格
  * @param {*} x 
  * @param {*} y 
@@ -56,3 +38,54 @@ export function createGrid (x, y) {
   grid.style.left = x * 36 + 'px'
   return grid
 }
+
+/**
+ * 绘制棋子并添加到棋盘上
+ * @param {*} x 
+ * @param {*} y 
+ * @param {*} player 
+ */
+export function renderChessmanDom (x, y, player) {
+  const grid = document.getElementById(`grid-${x}-${y}`)
+  const chessman = document.createElement('div')
+  chessman.className = 'chessman'
+  chessman.style.backgroundColor = player === BLACK ? 'black' : 'white'
+  grid.appendChild(chessman)
+}
+
+/**
+ * 移除棋子
+ * @param {*} x 
+ * @param {*} y 
+ * @param {*} player 
+ */
+export function removeChessmanDom (x, y, player) {
+  const grid = document.getElementById(`grid-${x}-${y}`)
+  // console.log(grid.childNodes)
+  while(grid.hasChildNodes()) //当div下还存在子节点时 循环继续  
+  {  
+      grid.removeChild(grid.firstChild);  
+  }  
+  // const nodes = grid.childNodes
+  // Array.prototype.forEach.call(nodes, (node => {
+  //   console.log('node')
+  //   // grid.removeChild(node)
+  // }))
+}
+
+/**
+ * 绘制胜利圆点
+ */
+
+export function renderWinDotDom (wins, winner) {
+  wins.forEach(function(step) {
+    if (step.player === winner) {
+      const {x, y} = step
+      const grid = document.getElementById(`grid-${x}-${y}`)
+      const chessman = document.createElement('div')
+      chessman.className = 'win-dot'
+      chessman.style.backgroundColor = '#2d8cf0'
+      grid.appendChild(chessman)
+    }
+  }, this);
+ }
